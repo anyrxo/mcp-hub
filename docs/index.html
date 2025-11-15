@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Hub - The npm for MCPs</title>
+    <meta name="description" content="Discover, install, and manage Model Context Protocol servers with ease. The npm for MCPs.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 6rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.85;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Terminal Demo */
+        .terminal-demo {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-button.red { background: #ff5f56; }
+        .terminal-button.yellow { background: #ffbd2e; }
+        .terminal-button.green { background: #27c93f; }
+
+        .terminal-content {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            color: #f8f8f2;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt {
+            color: var(--success);
+        }
+
+        .command {
+            color: var(--accent);
+        }
+
+        .output {
+            color: #94a3b8;
+        }
+
+        .success {
+            color: var(--success);
+        }
+
+        /* Main Content */
+        main {
+            background: white;
+            border-radius: 1rem 1rem 0 0;
+            margin-top: 2rem;
+            padding: 4rem 0;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4rem 0;
+            margin: 4rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .stat-item p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Commands Section */
+        .commands-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .command-item {
+            background: var(--light);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .command-item code {
+            background: var(--dark);
+            color: var(--accent);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .command-item h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .command-item p {
+            color: var(--gray);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--dark);
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            margin: 2rem 0;
+        }
+
+        .code-block code {
+            color: var(--accent);
+        }
+
+        /* Packages Grid */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .package-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .package-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .package-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .package-verified {
+            background: var(--success);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .package-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .package-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .package-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .features-grid,
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🚀 MCP Hub</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="https://github.com/yourusername/mcp-hub">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1 class="animate-in">MCP Hub</h1>
+            <p class="tagline">The npm for MCPs</p>
+            <p class="subtitle">Discover, install, and manage Model Context Protocol servers with ease</p>
+
+            <div class="cta-buttons">
+                <a href="#install" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/yourusername/mcp-hub" class="btn btn-secondary">View on GitHub</a>
+            </div>
+
+            <div class="terminal-demo">
+                <div class="terminal-header">
+                    <div class="terminal-button red"></div>
+                    <div class="terminal-button yellow"></div>
+                    <div class="terminal-button green"></div>
+                </div>
+                <div class="terminal-content">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span> <span class="command">npx mcp-hub search github</span>
+                    </div>
+                    <div class="terminal-line output">
+                        ┌──────────┬─────────────────────────────────────┬─────────────┬───────┬──────────┐
+                    </div>
+                    <div class="terminal-line output">
+                        │ Name     │ Description                         │ Category    │ Stars │ Verified │
+                    </div>
+                    <div class="terminal-line output">
+                        ├──────────┼─────────────────────────────────────┼─────────────┼───────┼──────────┤
+                    </div>
+                    <div class="terminal-line output">
+                        │ github   │ GitHub MCP server - manage issues...│ Development │ 1234  │ ✓        │
+                    </div>
+                    <div class="terminal-line output">
+                        └──────────┴─────────────────────────────────────┴─────────────┴───────┴──────────┘
+                    </div>
+                    <div class="terminal-line" style="margin-top: 1rem;">
+                        <span class="prompt">$</span> <span class="command">mcp install github</span>
+                    </div>
+                    <div class="terminal-line success">
+                        ✓ Successfully installed github
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section id="features">
+            <div class="container">
+                <h2>Why MCP Hub?</h2>
+                <p class="section-subtitle">Everything you need to manage MCP servers in one beautiful CLI</p>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3>Curated Registry</h3>
+                        <p>Access a curated collection of 7,260+ MCP servers with comprehensive metadata, categories, and verification status.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>One-Command Install</h3>
+                        <p>Install any MCP server with a single command. We handle npm/npx installation and Claude Code configuration automatically.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Smart Search</h3>
+                        <p>Find the perfect MCP server with powerful search and filtering by name, category, verification status, and more.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">✨</div>
+                        <h3>Beautiful CLI</h3>
+                        <p>Gorgeous terminal UI with colors, tables, spinners, and ASCII art. A joy to use every single time.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3>Auto-Configuration</h3>
+                        <p>Automatically updates your Claude Code configuration. No manual JSON editing required. Just install and go.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🩺</div>
+                        <h3>Health Checks</h3>
+                        <p>Built-in diagnostics ensure your system is ready. Check Node.js version, config files, and package integrity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>7,260+</h3>
+                        <p>MCP Servers</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>50+</h3>
+                        <p>Categories</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>100%</h3>
+                        <p>Free & Open Source</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>1 Minute</h3>
+                        <p>To Get Started</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="install">
+            <div class="container">
+                <h2>Quick Start</h2>
+                <p class="section-subtitle">Get up and running in seconds</p>
+
+                <div class="code-block">
+<span class="comment"># Install globally</span>
+<span class="command">npm install -g mcp-hub</span>
+
+<span class="comment"># Or use without installing</span>
+<span class="command">npx mcp-hub</span>
+
+<span class="comment"># Search for packages</span>
+<span class="command">mcp search github</span>
+
+<span class="comment"># Install a package</span>
+<span class="command">mcp install github</span>
+
+<span class="comment"># List installed packages</span>
+<span class="command">mcp list</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="commands">
+            <div class="container">
+                <h2>Commands</h2>
+                <p class="section-subtitle">Powerful commands for every need</p>
+
+                <div class="commands-list">
+                    <div class="command-item">
+                        <h4><code>mcp search &lt;query&gt;</code></h4>
+                        <p>Search for MCP servers by name or description. Filter by category, verification status, and more.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp install &lt;package&gt;</code></h4>
+                        <p>Install an MCP server and automatically configure Claude Code. Handles all the setup for you.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp list [--all]</code></h4>
+                        <p>List installed packages or all available packages in the registry.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp info &lt;package&gt;</code></h4>
+                        <p>Get detailed information about a package including metadata, installation details, and links.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp categories</code></h4>
+                        <p>View all available package categories with counts.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp config [--json]</code></h4>
+                        <p>View your current Claude Code MCP configuration.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp doctor</code></h4>
+                        <p>Run system diagnostics to ensure everything is working correctly.</p>
+                    </div>
+
+                    <div class="command-item">
+                        <h4><code>mcp uninstall &lt;package&gt;</code></h4>
+                        <p>Remove an installed MCP server and clean up configuration.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="packages">
+            <div class="container">
+                <h2>Featured Packages</h2>
+                <p class="section-subtitle">Popular MCP servers to get you started</p>
+
+                <div class="packages-grid">
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">github</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">GitHub MCP server - manage issues, PRs, repos, and more directly from Claude.</p>
+                        <div class="package-meta">
+                            <span>⭐ 1,234</span>
+                            <span>📂 Development</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">filesystem</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">Safe file system operations with configurable permissions and sandboxing.</p>
+                        <div class="package-meta">
+                            <span>⭐ 2,100</span>
+                            <span>📂 Filesystem</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">puppeteer</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">Browser automation and web scraping with Puppeteer integration.</p>
+                        <div class="package-meta">
+                            <span>⭐ 1,890</span>
+                            <span>📂 Web</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">postgres</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">PostgreSQL database integration for schema inspection and queries.</p>
+                        <div class="package-meta">
+                            <span>⭐ 892</span>
+                            <span>📂 Database</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">brave-search</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">Web search capabilities using the Brave Search API.</p>
+                        <div class="package-meta">
+                            <span>⭐ 756</span>
+                            <span>📂 Search</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">slack</div>
+                            <div class="package-verified">✓ Verified</div>
+                        </div>
+                        <p class="package-description">Slack integration for reading and sending messages from Claude.</p>
+                        <div class="package-meta">
+                            <span>⭐ 645</span>
+                            <span>📂 Communication</span>
+                            <span>v1.0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <h2>Join the Community</h2>
+                <p class="section-subtitle">Help us build the future of MCP package management</p>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="https://github.com/yourusername/mcp-hub" class="btn btn-primary">Star on GitHub</a>
+                    <a href="https://github.com/yourusername/mcp-hub/issues" class="btn btn-secondary">Report an Issue</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 MCP Hub. MIT License.</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">Made with ❤️ for the MCP Community</p>
+
+            <div class="footer-links">
+                <a href="https://github.com/yourusername/mcp-hub">GitHub</a>
+                <a href="https://github.com/yourusername/mcp-hub/issues">Issues</a>
+                <a href="https://github.com/yourusername/mcp-hub/discussions">Discussions</a>
+                <a href="https://modelcontextprotocol.io">MCP Protocol</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card, .package-card, .command-item').forEach((el) => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
